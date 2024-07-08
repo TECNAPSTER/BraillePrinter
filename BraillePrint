@@ -1,0 +1,82 @@
+class BraillePrinter:
+    def __init__(self):
+        self.page_width = 40  # largura da página em caracteres
+        self.page_height = 25  # altura da página em linhas
+        self.current_line = 0
+        self.current_col = 0
+        self.current_page = []
+        
+    def print_text(self, text):
+        for char in text:
+            braille_char = self.convert_to_braille(char)
+            self.add_to_page(braille_char)
+        
+    def add_to_page(self, braille_char):
+        if self.current_col + len(braille_char[0]) > self.page_width:
+            self.new_line()
+        for i in range(len(braille_char)):
+            line = braille_char[i]
+            if self.current_line >= len(self.current_page):
+                self.current_page.append([" "] * self.page_width)
+            for j in range(len(line)):
+                if self.current_col + j < self.page_width:
+                    self.current_page[self.current_line][self.current_col + j] = line[j]
+            self.current_line += 1
+        self.current_col += len(braille_char[0])
+        self.current_line -= len(braille_char)
+        
+    def new_line(self):
+        self.current_line += 1
+        self.current_col = 0
+        
+    def convert_to_braille(self, char):
+        # Tabela simples de conversão para braille
+        braille_map = {
+            ' ': ["⠀", "⠀", "⠀", "⠀"],
+            'a': ["⠁", "⠀", "⠀", "⠀"],
+            'b': ["⠃", "⠀", "⠀", "⠀"],
+            'c': ["⠉", "⠀", "⠀", "⠀"],
+            'd': ["⠙", "⠀", "⠀", "⠀"],
+            'e': ["⠑", "⠀", "⠀", "⠀"],
+            'f': ["⠋", "⠀", "⠀", "⠀"],
+            'g': ["⠛", "⠀", "⠀", "⠀"],
+            'h': ["⠓", "⠀", "⠀", "⠀"],
+            'i': ["⠊", "⠀", "⠀", "⠀"],
+            'j': ["⠚", "⠀", "⠀", "⠀"],
+            'k': ["⠅", "⠄", "⠀", "⠀"],
+            'l': ["⠇", "⠄", "⠀", "⠀"],
+            'm': ["⠍", "⠄", "⠀", "⠀"],
+            'n': ["⠝", "⠄", "⠀", "⠀"],
+            'o': ["⠕", "⠄", "⠀", "⠀"],
+            'p': ["⠏", "⠄", "⠀", "⠀"],
+            'q': ["⠟", "⠄", "⠀", "⠀"],
+            'r': ["⠗", "⠄", "⠀", "⠀"],
+            's': ["⠎", "⠄", "⠀", "⠀"],
+            't': ["⠞", "⠄", "⠀", "⠀"],
+            'u': ["⠥", "⠄", "⠀", "⠀"],
+            'v': ["⠧", "⠄", "⠀", "⠀"],
+            'w': ["⠺", "⠄", "⠀", "⠀"],
+            'x': ["⠭", "⠄", "⠀", "⠀"],
+            'y': ["⠽", "⠄", "⠀", "⠀"],
+            'z': ["⠵", "⠄", "⠀", "⠀"],
+        }
+        if char.lower() in braille_map:
+            return braille_map[char.lower()]
+        else:
+            return ["⠀", "⠀", "⠀", "⠀"]  # caractere não encontrado, retorna espaço em branco
+    
+    def print_page(self):
+        for line in self.current_page:
+            print("".join(line))
+    
+    def reset_printer(self):
+        self.current_line = 0
+        self.current_col = 0
+        self.current_page = []
+
+
+# Exemplo de uso:
+printer = BraillePrinter()
+texto = "Olá, mundo! Esta é uma impressora em Braille para deficientes visuais."
+printer.print_text(texto)
+printer.print_page()
